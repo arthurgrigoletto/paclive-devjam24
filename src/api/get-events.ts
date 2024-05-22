@@ -3,7 +3,6 @@ import { api } from '@/lib/axios'
 export interface GetEventsResponse {
   id: string
   name: string
-  eventCode: string
   eventDate: Date
   location: string
   status: 'ACTIVE' | 'INACTIVE'
