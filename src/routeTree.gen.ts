@@ -15,6 +15,7 @@ import { Route as LoginImport } from './routes/login'
 import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth.index'
 import { Route as AuthPredictiveAnalysisImport } from './routes/_auth.predictive-analysis'
+import { Route as AuthAttendanceImport } from './routes/_auth.attendance'
 import { Route as AuthEventsCreateImport } from './routes/_auth.events.create'
 import { Route as AuthEventsEventIdImport } from './routes/_auth.events.$eventId'
 
@@ -37,6 +38,11 @@ const AuthIndexRoute = AuthIndexImport.update({
 
 const AuthPredictiveAnalysisRoute = AuthPredictiveAnalysisImport.update({
   path: '/predictive-analysis',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthAttendanceRoute = AuthAttendanceImport.update({
+  path: '/attendance',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -67,6 +73,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/login'
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
+    }
+    '/_auth/attendance': {
+      id: '/_auth/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof AuthAttendanceImport
+      parentRoute: typeof AuthImport
     }
     '/_auth/predictive-analysis': {
       id: '/_auth/predictive-analysis'
@@ -103,6 +116,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
+    AuthAttendanceRoute,
     AuthPredictiveAnalysisRoute,
     AuthIndexRoute,
     AuthEventsEventIdRoute,
