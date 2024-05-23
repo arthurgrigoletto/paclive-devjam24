@@ -63,7 +63,7 @@ function DashboardPage() {
           <EventCard
             key={event.id}
             status={event.status}
-            type={event?.type || "Concert"}
+            type={event.type || 'Event'}
             eventName={event.name}
             eventId={event.id}
             eventStartDate={event.startedAt}
