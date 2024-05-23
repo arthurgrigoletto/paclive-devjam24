@@ -58,7 +58,7 @@ function DashboardPage() {
         </div>
       </div>
       
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap gap-4">
         {eventList?.map((event) => (
           <EventCard
             key={event.id}
