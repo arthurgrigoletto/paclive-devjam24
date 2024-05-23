@@ -1,16 +1,47 @@
-import { useQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
-import { Line } from 'react-chartjs-2';
-import 'chart.js/auto'; // necessary for chart.js to work properly
-import { getRevenue } from '@/api/get-revenue';
-import { predict } from '@/api/predict';
-import { useState } from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
+import { Line } from "react-chartjs-2";
+import "chart.js/auto"; // necessary for chart.js to work properly
+import { getRevenue } from "@/api/get-revenue";
+import { predict } from "@/api/predict";
+import { useState } from "react";
+import { Calendar } from '@/components/ui/calendar'
+import { Button } from '@/components/ui/button'
+import { CalendarIcon } from 'lucide-react'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { format } from 'date-fns'
 
-export const Route = createFileRoute('/_auth/predictive-analysis')({
-  component: PredictiveAnalysisPage,
+export const Route = createFileRoute("/_auth/predictive-analysis")({
+  component: CreatePredictiveAnalysisPage,
 });
 
-function PredictiveAnalysisPage() {
+function CreatePredictiveAnalysisPage() {
+  return (
+    <section className="flex flex-col space-y-8 bg-[#F5F7FA]">
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-2">
+          <Link className="inline-flex items-center gap-2" to="/">
+            <ArrowLeft className="size-3" />
+            <span className="text-sm font-normal text-[#181F25] underline">
+              Back to All Events
+            </span>
+          </Link>
+          <h2 className="text-3xl font-bold text-[#181F25]">
+            Revenue Forecast
+          </h2>
+        </div>
+      </div>
+      <div>{createRevenueWithForecastChart()}</div>
+    </section>
+  );
+}
+
+function createRevenueWithForecastChart() {
   const [consolidated, setConsolidated] = useState(false);
 
   // Set default forecast end date to 90 days from now
@@ -20,12 +51,12 @@ function PredictiveAnalysisPage() {
   const [forecastEnd, setForecastEnd] = useState(defaultForecastEnd);
 
   const { data: revenue, isLoading: isLoadingRevenue } = useQuery({
-    queryKey: ['revenue'],
+    queryKey: ["revenue"],
     queryFn: getRevenue,
   });
 
   const handleDateChange = (event) => {
-    setForecastEnd(new Date(event.target.value));
+    setForecastEnd(new Date(event));
   };
 
   const calculateForecastPeriods = (startDate, endDate) => {
@@ -33,7 +64,7 @@ function PredictiveAnalysisPage() {
     const currentDate = new Date(startDate);
 
     while (currentDate <= endDate) {
-      periods.push({ date: currentDate.toISOString().split('T')[0], value: 0 });
+      periods.push({ date: currentDate.toISOString().split("T")[0], value: 0 });
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
@@ -44,7 +75,7 @@ function PredictiveAnalysisPage() {
   const forecastPeriods = calculateForecastPeriods(startDate, forecastEnd);
 
   const { data: forecast, isLoading: isLoadingForecast } = useQuery({
-    queryKey: ['predict', revenue, forecastEnd],
+    queryKey: ["predict", revenue, forecastEnd],
     queryFn: () => predict(revenue, forecastPeriods),
     enabled: !!revenue, // ensures the query only runs if revenue is available
   });
@@ -61,7 +92,7 @@ function PredictiveAnalysisPage() {
     const consolidatedData = {};
 
     data.forEach(({ date, value }) => {
-      const [year, month] = date.split('-');
+      const [year, month] = date.split("-");
       const key = `${year}-${month}`;
 
       if (!consolidatedData[key]) {
@@ -78,66 +109,108 @@ function PredictiveAnalysisPage() {
     setConsolidated(!consolidated);
   };
 
-  const displayedRevenue = consolidated ? consolidateDataPerMonth(revenue) : revenue;
-  const displayedForecast = consolidated ? consolidateDataPerMonth(forecast) : forecast;
+  const displayedRevenue = consolidated
+    ? consolidateDataPerMonth(revenue)
+    : revenue;
+  const displayedForecast = consolidated
+    ? consolidateDataPerMonth(forecast)
+    : forecast;
 
-  if (displayedRevenue[displayedRevenue.length-1].date === displayedForecast[0].date) {
-    displayedForecast[0].value += displayedRevenue[displayedRevenue.length-1].value
+  if (
+    displayedRevenue[displayedRevenue.length - 1].date ===
+    displayedForecast[0].date
+  ) {
+    displayedForecast[0].value +=
+      displayedRevenue[displayedRevenue.length - 1].value;
   }
 
-  const allDates = new Set([...displayedRevenue.map(entry => entry.date), ...displayedForecast.map(entry => entry.date)]);
-  const chartLabels = Array.from(allDates).sort((a, b) => new Date(a) - new Date(b));
+  const allDates = new Set([
+    ...displayedRevenue.map((entry) => entry.date),
+    ...displayedForecast.map((entry) => entry.date),
+  ]);
+  const chartLabels = Array.from(allDates).sort(
+    (a, b) => new Date(a) - new Date(b),
+  );
 
-  const revenueData = chartLabels.map(date => {
-    const entry = displayedRevenue.find(entry => entry.date === date);
+  const revenueData = chartLabels.map((date) => {
+    const entry = displayedRevenue.find((entry) => entry.date === date);
     return entry ? entry.value : null;
   });
 
-  const forecastData = chartLabels.map(date => {
-    const entry = displayedForecast.find(entry => entry.date === date);
+  const forecastData = chartLabels.map((date) => {
+    const entry = displayedForecast.find((entry) => entry.date === date);
     return entry ? entry.value : null;
   });
 
   const chartData = {
-    labels: chartLabels.map(date => new Date(date).toLocaleDateString()),
+    labels: chartLabels.map((date) => new Date(date).toLocaleDateString()),
     datasets: [
       {
-        label: 'Revenue',
+        label: "Revenue",
         data: revenueData,
         fill: false,
-        borderColor: 'rgba(91,155,213,1)',
+        borderColor: "rgba(24,31,36,1)",
         borderWidth: 2,
         pointRadius: 0,
-        lineTension: 0.2,
+        lineTension: 0.1,
       },
       {
-        label: 'Forecast',
+        label: "Forecast",
         data: forecastData,
         fill: false,
-        borderColor: 'rgba(236,125,50,1)',
+        borderColor: "rgba(181,8,43,1)",
         borderWidth: 2,
         pointRadius: 0,
-        borderDash: [5, 5],
-        lineTension: 0.2,
+        lineTension: 0.1,
       },
     ],
   };
 
+  const chartOptions = {
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+      },
+    },
+  };
+
   return (
     <div>
-      <button onClick={handleConsolidate}>
-        {consolidated ? 'Show Daily Data' : 'Consolidate Monthly Data'}
-      </button>
-      <div>
-        <label htmlFor="forecast-end">Forecast End Date: </label>
-        <input
-          type="date"
-          id="forecast-end"
-          value={forecastEnd.toISOString().split('T')[0]}
-          onChange={handleDateChange}
-        />
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <label
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            htmlFor="forecast-end"
+          >
+            Forecast End Date:{" "}
+          </label>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant={"outline"}>
+                {forecastEnd.toISOString().split("T")[0]}
+                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                // selected={forecastEnd.toISOString().split('T')[0]}
+                onSelect={handleDateChange}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+        </div>
+        <button
+          onClick={handleConsolidate}
+          type="submit"
+          className="inline-flex h-12 cursor-pointer items-center gap-2 rounded border bg-[#B5082A] p-3 px-3 py-2 text-base font-bold text-white shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
+        >
+          {consolidated ? "Show Daily Data" : "Consolidate Monthly Data"}
+        </button>
       </div>
-      <Line data={chartData} />
+      <Line data={chartData} options={chartOptions} />
     </div>
   );
 }
