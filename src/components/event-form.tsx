@@ -16,7 +16,7 @@ const eventForm = z.object({
   price: z.string().default('0').optional(),
   priceTier: z.string(),
   ticketDesignId: z.string().optional(),
-  location: z.string(),
+  location: z.string().optional(),
   startedDate: z.date(),
   startedTime: z.date(),
   displayStartedAt: z.boolean().default(false).optional(),
@@ -319,7 +319,7 @@ export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
                 htmlFor={field.name}
                 className="text-base font-medium text-[#181F25]"
               >
-                Location*
+                Location
               </label>
               <Select
                 id={field.name}

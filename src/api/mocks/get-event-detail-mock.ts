@@ -12,7 +12,7 @@ export const getEventDetailMock = http.get<
   return HttpResponse.json({
     id: params.eventId,
     name: faker.lorem.words({ max: 4, min: 1 }),
-    status: faker.helpers.arrayElement(['ACTIVE', 'INACTIVE']),
+    status: 'ACTIVE',
     location: 'luca-arena',
     capacity: faker.number.int({ max: 10 }),
     displayEndedAt: faker.datatype.boolean(),

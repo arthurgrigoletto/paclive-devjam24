@@ -6,12 +6,13 @@ export interface GetEventsResponse {
   capacity: number
   price: string
   priceTier: string
+  type?: string
   ticketDesignId: string
   startedAt: Date
   endedAt: Date
   displayStartedAt: boolean
   displayEndedAt: boolean
-  location: string
+  location?: string
   status: 'ACTIVE' | 'INACTIVE'
   createdAt: Date | null
   updatedAt: Date | null

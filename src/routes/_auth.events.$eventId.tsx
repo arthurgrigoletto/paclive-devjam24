@@ -5,7 +5,6 @@ import { ArrowLeft, User } from 'lucide-react'
 
 import { getEventDetail } from '@/api/get-event-detail'
 import { EventForm } from '@/components/event-form'
-import { Chart } from '@/components/icons/chart'
 import { StatusTag } from '@/components/status-tag'
 
 const FORM_ID = 'EDIT_EVENT_FORM_ID'
@@ -74,13 +73,6 @@ function EventDetailPage() {
         <div className="flex items-center justify-between pb-6">
           <h3 className="text-2xl font-bold text-[#181F25]">Event Details</h3>
           <div className="flex items-center gap-4">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold text-[#434A54] shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
-            >
-              <Chart className="size-4" />
-              Predict Analytics
-            </Link>
             <Link
               to="/"
               className="inline-flex items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold text-[#434A54] shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
