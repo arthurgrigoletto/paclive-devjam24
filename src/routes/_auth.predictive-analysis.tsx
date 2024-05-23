@@ -1,24 +1,25 @@
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
-import { Line } from "react-chartjs-2";
-import "chart.js/auto"; // necessary for chart.js to work properly
-import { getRevenue } from "@/api/get-revenue";
-import { predict } from "@/api/predict";
-import { useState } from "react";
-import { Calendar } from '@/components/ui/calendar'
+import 'chart.js/auto' // necessary for chart.js to work properly
+
+import { useQuery } from '@tanstack/react-query'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { format } from 'date-fns'
+import { ArrowLeft, CalendarIcon } from 'lucide-react'
+import { useState } from 'react'
+import { Line } from 'react-chartjs-2'
+
+import { getRevenue } from '@/api/get-revenue'
+import { predict } from '@/api/predict'
 import { Button } from '@/components/ui/button'
-import { CalendarIcon } from 'lucide-react'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { format } from 'date-fns'
 
-export const Route = createFileRoute("/_auth/predictive-analysis")({
+export const Route = createFileRoute('/_auth/predictive-analysis')({
   component: CreatePredictiveAnalysisPage,
-});
+})
 
 function CreatePredictiveAnalysisPage() {
   return (
@@ -38,133 +39,133 @@ function CreatePredictiveAnalysisPage() {
       </div>
       <div>{createRevenueWithForecastChart()}</div>
     </section>
-  );
+  )
 }
 
 function createRevenueWithForecastChart() {
-  const [consolidated, setConsolidated] = useState(false);
+  const [consolidated, setConsolidated] = useState(false)
 
   // Set default forecast end date to 90 days from now
-  const defaultForecastEnd = new Date();
-  defaultForecastEnd.setDate(defaultForecastEnd.getDate() + 90);
+  const defaultForecastEnd = new Date()
+  defaultForecastEnd.setDate(defaultForecastEnd.getDate() + 90)
 
-  const [forecastEnd, setForecastEnd] = useState(defaultForecastEnd);
+  const [forecastEnd, setForecastEnd] = useState(defaultForecastEnd)
 
   const { data: revenue, isLoading: isLoadingRevenue } = useQuery({
-    queryKey: ["revenue"],
+    queryKey: ['revenue'],
     queryFn: getRevenue,
-  });
+  })
 
   const handleDateChange = (event) => {
-    setForecastEnd(new Date(event));
-  };
+    setForecastEnd(new Date(event))
+  }
 
   const calculateForecastPeriods = (startDate, endDate) => {
-    const periods = [];
-    const currentDate = new Date(startDate);
+    const periods = []
+    const currentDate = new Date(startDate)
 
     while (currentDate <= endDate) {
-      periods.push({ date: currentDate.toISOString().split("T")[0], value: 0 });
-      currentDate.setDate(currentDate.getDate() + 1);
+      periods.push({ date: currentDate.toISOString().split('T')[0], value: 0 })
+      currentDate.setDate(currentDate.getDate() + 1)
     }
 
-    return periods;
-  };
+    return periods
+  }
 
-  const startDate = new Date();
-  const forecastPeriods = calculateForecastPeriods(startDate, forecastEnd);
+  const startDate = new Date()
+  const forecastPeriods = calculateForecastPeriods(startDate, forecastEnd)
 
   const { data: forecast, isLoading: isLoadingForecast } = useQuery({
-    queryKey: ["predict", revenue, forecastEnd],
+    queryKey: ['predict', revenue, forecastEnd],
     queryFn: () => predict(revenue, forecastPeriods),
     enabled: !!revenue, // ensures the query only runs if revenue is available
-  });
+  })
 
   if (isLoadingRevenue || isLoadingForecast) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   if (!revenue || !forecast) {
-    return <div>Error loading data</div>;
+    return <div>Error loading data</div>
   }
 
   const consolidateDataPerMonth = (data) => {
-    const consolidatedData = {};
+    const consolidatedData = {}
 
     data.forEach(({ date, value }) => {
-      const [year, month] = date.split("-");
-      const key = `${year}-${month}`;
+      const [year, month] = date.split('-')
+      const key = `${year}-${month}`
 
       if (!consolidatedData[key]) {
-        consolidatedData[key] = { date: key, value: 0 };
+        consolidatedData[key] = { date: key, value: 0 }
       }
 
-      consolidatedData[key].value += value;
-    });
+      consolidatedData[key].value += value
+    })
 
-    return Object.values(consolidatedData);
-  };
+    return Object.values(consolidatedData)
+  }
 
   const handleConsolidate = () => {
-    setConsolidated(!consolidated);
-  };
+    setConsolidated(!consolidated)
+  }
 
   const displayedRevenue = consolidated
     ? consolidateDataPerMonth(revenue)
-    : revenue;
+    : revenue
   const displayedForecast = consolidated
     ? consolidateDataPerMonth(forecast)
-    : forecast;
+    : forecast
 
   if (
     displayedRevenue[displayedRevenue.length - 1].date ===
     displayedForecast[0].date
   ) {
     displayedForecast[0].value +=
-      displayedRevenue[displayedRevenue.length - 1].value;
+      displayedRevenue[displayedRevenue.length - 1].value
   }
 
   const allDates = new Set([
     ...displayedRevenue.map((entry) => entry.date),
     ...displayedForecast.map((entry) => entry.date),
-  ]);
+  ])
   const chartLabels = Array.from(allDates).sort(
     (a, b) => new Date(a) - new Date(b),
-  );
+  )
 
   const revenueData = chartLabels.map((date) => {
-    const entry = displayedRevenue.find((entry) => entry.date === date);
-    return entry ? entry.value : null;
-  });
+    const entry = displayedRevenue.find((entry) => entry.date === date)
+    return entry ? entry.value : null
+  })
 
   const forecastData = chartLabels.map((date) => {
-    const entry = displayedForecast.find((entry) => entry.date === date);
-    return entry ? entry.value : null;
-  });
+    const entry = displayedForecast.find((entry) => entry.date === date)
+    return entry ? entry.value : null
+  })
 
   const chartData = {
     labels: chartLabels.map((date) => new Date(date).toLocaleDateString()),
     datasets: [
       {
-        label: "Revenue",
+        label: 'Revenue',
         data: revenueData,
         fill: false,
-        borderColor: "rgba(24,31,36,1)",
+        borderColor: 'rgba(24,31,36,1)',
         borderWidth: 2,
         pointRadius: 0,
         lineTension: 0.1,
       },
       {
-        label: "Forecast",
+        label: 'Forecast',
         data: forecastData,
         fill: false,
-        borderColor: "rgba(181,8,43,1)",
+        borderColor: 'rgba(181,8,43,1)',
         borderWidth: 2,
         pointRadius: 0,
         lineTension: 0.1,
       },
     ],
-  };
+  }
 
   const chartOptions = {
     plugins: {
@@ -173,22 +174,22 @@ function createRevenueWithForecastChart() {
         position: 'bottom',
       },
     },
-  };
+  }
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <div>
           <label
             className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             htmlFor="forecast-end"
           >
-            Forecast End Date:{" "}
+            Forecast End Date:{' '}
           </label>
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant={"outline"}>
-                {forecastEnd.toISOString().split("T")[0]}
+              <Button variant={'outline'}>
+                {forecastEnd.toISOString().split('T')[0]}
                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -207,10 +208,10 @@ function createRevenueWithForecastChart() {
           type="submit"
           className="inline-flex h-12 cursor-pointer items-center gap-2 rounded border bg-[#B5082A] p-3 px-3 py-2 text-base font-bold text-white shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
         >
-          {consolidated ? "Show Daily Data" : "Consolidate Monthly Data"}
+          {consolidated ? 'Show Daily Data' : 'Consolidate Monthly Data'}
         </button>
       </div>
       <Line data={chartData} options={chartOptions} />
     </div>
-  );
+  )
 }

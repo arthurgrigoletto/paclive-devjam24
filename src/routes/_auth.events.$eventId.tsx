@@ -1,3 +1,4 @@
+import { Separator } from '@radix-ui/react-separator'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft, User } from 'lucide-react'
@@ -6,7 +7,6 @@ import { getEventDetail } from '@/api/get-event-detail'
 import { EventForm } from '@/components/event-form'
 import { Chart } from '@/components/icons/chart'
 import { StatusTag } from '@/components/status-tag'
-import { Separator } from '@/components/ui/separator'
 
 const FORM_ID = 'EDIT_EVENT_FORM_ID'
 

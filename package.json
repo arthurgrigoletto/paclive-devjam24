@@ -24,6 +24,7 @@
     "@tanstack/react-query-devtools": "^5.37.1",
     "@tanstack/react-router": "^1.33.6",
     "@tanstack/react-table": "^8.17.3",
+    "antd": "^5.17.3",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
     "class-variance-authority": "^0.7.0",

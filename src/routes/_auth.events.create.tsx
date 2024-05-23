@@ -40,7 +40,7 @@ function CreateEventPage() {
       </div>
 
       <div className="rounded-lg bg-white p-6 pb-24">
-        <EventForm id={FORM_ID} />
+        <EventForm id={FORM_ID} onSubmit={(data) => console.log(data)} />
       </div>
     </section>
   )

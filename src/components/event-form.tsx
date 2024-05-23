@@ -1,37 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { format } from 'date-fns'
-import { CalendarIcon, Ticket } from 'lucide-react'
+import { Checkbox, DatePicker, Input, Select, TimePicker } from 'antd'
+import dayjs from 'dayjs'
+import { Ticket } from 'lucide-react'
 import { type ComponentProps, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 import type { GetEventsResponse } from '@/api/get-events'
 import maps from '@/assets/maps.png'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 
 const eventForm = z.object({
   id: z.string(),
@@ -83,338 +59,328 @@ export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
   }, [eventData, form])
 
   return (
-    <Form {...form}>
-      <form
-        className="grid w-full grid-cols-2 gap-x-40"
-        onSubmit={form.handleSubmit(onSubmit)}
-        {...props}
-      >
-        <div className="grid auto-rows-min grid-cols-2 gap-8">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Event Name*</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Event ID*</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="startedDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Start Date*</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button variant={'outline'}>
-                        {field.value ? (
-                          format(field.value, 'MM/dd/yyyy')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="startedTime"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Start Time*</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button variant={'outline'}>
-                        {field.value ? (
-                          format(field.value, 'MM/dd/yyyy')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="displayStartedAt"
-            render={({ field }) => (
-              <FormItem className="col-span-2 flex flex-row items-start space-x-2 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>Display this on ticket</FormLabel>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="endedDate"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>End Date*</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button variant={'outline'}>
-                        {field.value ? (
-                          format(field.value, 'MM/dd/yyyy')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="endedTime"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>End Time*</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button variant={'outline'}>
-                        {field.value ? (
-                          format(field.value, 'MM/dd/yyyy')
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="displayEndedAt"
-            render={({ field }) => (
-              <FormItem className="col-span-2 flex flex-row items-start space-x-2 space-y-0">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>Display this on ticket</FormLabel>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="capacity"
-            render={({ field }) => (
-              <FormItem className="space-y-1">
-                <FormLabel>Capacity*</FormLabel>
-                <FormDescription className="text-xs">
-                  Insert 0 if there is no limit in the event&apos;s capacity
-                </FormDescription>
-                <FormControl>
-                  <Input {...field} placeholder="0" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem className="space-y-1">
-                <FormLabel>Ticket Flat Price*</FormLabel>
-                <FormDescription className="text-xs">
-                  Insert 0 if this event is free
-                </FormDescription>
-                <FormControl>
-                  <Input {...field} placeholder="$ 0.00" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="priceTier"
-            render={({ field }) => (
-              <FormItem className="w-64">
-                <FormLabel>Price Tier*</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="- Select -" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="1">1</SelectItem>
-                    <SelectItem value="2">2</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <div className="flex flex-col gap-4">
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem className="w-64">
-                <FormLabel>Location*</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  value={field.value}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="- Select -" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="luca-arena">Luca Arena</SelectItem>
-                    <SelectItem value="luca-stadium">Luca Stadium</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <img
-            src={maps}
-            alt="map from santa ana stadium"
-            className="h-[226px] w-[471px]"
-          />
-
-          <div className="flex items-end gap-4">
-            <FormField
-              control={form.control}
-              name="ticketDesignId"
-              render={({ field }) => (
-                <FormItem className="w-64">
-                  <FormLabel>Choose a Ticket Design*</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="h-12">
-                        <SelectValue placeholder="- Select -" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="MOB.101">MOB.101</SelectItem>
-                      <SelectItem value="MOB.102">MOB.102</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-bold">OR</span>
-              <button
-                type="button"
-                className="inline-flex h-12 w-fit cursor-pointer items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
+    <form
+      className="grid w-full grid-cols-2 gap-x-40"
+      onSubmit={form.handleSubmit(onSubmit)}
+      {...props}
+    >
+      <div className="grid auto-rows-min grid-cols-2 gap-8">
+        <Controller
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <fieldset className="flex flex-col space-y-1">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
               >
-                <Ticket className="size-4 text-[#434A54]" />
-                Go to Ticket Designer
-              </button>
-            </div>
+                Event Name*
+              </label>
+              <Input
+                {...field}
+                id={field.name}
+                className="h-10"
+                placeholder="Type an event name"
+              />
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="id"
+          render={({ field }) => (
+            <fieldset className="flex flex-col space-y-1">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Event ID*
+              </label>
+              <Input
+                {...field}
+                id={field.name}
+                className="h-10"
+                placeholder="Type an Event ID"
+              />
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="startedDate"
+          render={({ field }) => (
+            <fieldset className="flex flex-col">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Start Date*
+              </label>
+              <DatePicker
+                id={field.name}
+                className="h-10"
+                format={'MM/DD/YYYY'}
+                value={field.value && dayjs(field.value)}
+                onChange={(value) => field.onChange(value.toDate())}
+              />
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="startedTime"
+          render={({ field }) => (
+            <fieldset className="flex flex-col">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Start Time*
+              </label>
+              <TimePicker
+                id={field.name}
+                className="h-10"
+                format={'hh:mm A'}
+                value={field.value ? dayjs(field.value) : null}
+                onChange={(value) => field.onChange(value.toDate())}
+              />
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="displayStartedAt"
+          render={({ field }) => (
+            <fieldset className="col-span-2 flex flex-row items-center space-x-2 space-y-0">
+              <Checkbox
+                id={field.name}
+                checked={field.value}
+                onChange={field.onChange}
+              />
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Display this on ticket
+              </label>
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="endedDate"
+          render={({ field }) => (
+            <fieldset className="flex flex-col">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                End Date*
+              </label>
+              <DatePicker
+                id={field.name}
+                className="h-10"
+                format={'MM/DD/YYYY'}
+                value={field.value && dayjs(field.value)}
+                onChange={(value) => field.onChange(value.toDate())}
+              />
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="endedTime"
+          render={({ field }) => (
+            <fieldset className="flex flex-col">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                End Time*
+              </label>
+              <TimePicker
+                id={field.name}
+                className="h-10"
+                format={'hh:mm A'}
+                value={field.value ? dayjs(field.value) : null}
+                onChange={(value) => field.onChange(value.toDate())}
+              />
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="displayEndedAt"
+          render={({ field }) => (
+            <fieldset className="col-span-2 flex flex-row items-center space-x-2 space-y-0">
+              <Checkbox
+                id={field.name}
+                checked={field.value}
+                onChange={field.onChange}
+              />
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Display this on ticket
+              </label>
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="capacity"
+          render={({ field }) => (
+            <fieldset className="flex flex-col space-y-1">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Capacity*
+              </label>
+              <span className="text-xs text-[#656D78]">
+                Insert 0 if there is no limit in the event&apos;s capacity
+              </span>
+              <Input
+                {...field}
+                id={field.name}
+                placeholder="0"
+                className="h-10"
+              />
+            </fieldset>
+          )}
+        />
+
+        <Controller
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <fieldset className="flex flex-col space-y-1">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Ticket Flat Price*
+              </label>
+              <span className="text-xs text-[#656D78]">
+                Insert 0 if this event is free
+              </span>
+              <Input
+                {...field}
+                id={field.name}
+                placeholder="$ 0.00"
+                className="h-10"
+              />
+            </fieldset>
+          )}
+        />
+        <Controller
+          control={form.control}
+          name="priceTier"
+          render={({ field }) => (
+            <fieldset className="flex w-64 flex-col">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Price Tier*
+              </label>
+              <Select
+                id={field.name}
+                className="h-10"
+                placeholder="- Select -"
+                value={field.value || null}
+                onChange={field.onChange}
+                options={[
+                  { value: '1', label: '1' },
+                  { value: '2', label: '2' },
+                ]}
+              />
+            </fieldset>
+          )}
+        />
+      </div>
+
+      <div className="flex flex-col gap-4">
+        <Controller
+          control={form.control}
+          name="location"
+          render={({ field }) => (
+            <fieldset className="flex w-64 flex-col">
+              <label
+                htmlFor={field.name}
+                className="text-base font-medium text-[#181F25]"
+              >
+                Location*
+              </label>
+              <Select
+                id={field.name}
+                className="h-10"
+                placeholder="- Select -"
+                value={field.value || null}
+                onChange={field.onChange}
+                options={[
+                  { value: 'luca-arena', label: 'Luca Arena' },
+                  { value: 'luca-stadium', label: 'Luca Stadium' },
+                ]}
+              />
+            </fieldset>
+          )}
+        />
+
+        <img
+          src={maps}
+          alt="map from santa ana stadium"
+          className="h-[226px] w-[471px]"
+        />
+
+        <div className="flex items-end gap-4">
+          <Controller
+            control={form.control}
+            name="ticketDesignId"
+            render={({ field }) => (
+              <fieldset className="flex w-64 flex-col">
+                <label
+                  htmlFor={field.name}
+                  className="text-base font-medium text-[#181F25]"
+                >
+                  Choose a Ticket Design*
+                </label>
+                <Select
+                  id={field.name}
+                  className="h-10"
+                  placeholder="- Select -"
+                  value={field.value || null}
+                  onChange={field.onChange}
+                  options={[
+                    { value: 'MOB.101', label: 'MOB.101' },
+                    { value: 'MOB.102', label: 'MOB.102' },
+                  ]}
+                />
+              </fieldset>
+            )}
+          />
+
+          <div className="flex items-center gap-4">
+            <span className="text-xs font-bold">OR</span>
+            <button
+              type="button"
+              className="inline-flex h-10 w-fit cursor-pointer items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
+            >
+              <Ticket className="size-4 text-[#434A54]" />
+              Go to Ticket Designer
+            </button>
           </div>
         </div>
-      </form>
-    </Form>
+      </div>
+    </form>
   )
 }
