@@ -1,21 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
-import { CircleX } from 'lucide-react'
-import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
+import { Checkbox, Input } from 'antd'
+import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { useAuth } from '@/context/auth'
 import { sleep } from '@/lib/utils'
 
@@ -66,10 +54,7 @@ function LoginPage() {
 
       await navigate({ to: search.redirect || fallback })
     } catch (error) {
-      toast.error('Invalid Credentials', {
-        position: 'top-right',
-        icon: <CircleX />,
-      })
+      console.error('Invalid credentials')
     }
   }
 
@@ -82,72 +67,67 @@ function LoginPage() {
             Please enter your password below to proceed or sign in with a code.
           </p>
 
-          <Form {...form}>
-            <form
-              className="space-y-4"
-              onSubmit={form.handleSubmit(handleSignIn)}
+          <form
+            className="space-y-4"
+            onSubmit={form.handleSubmit(handleSignIn)}
+          >
+            <Controller
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <fieldset>
+                  <label htmlFor={field.name}>Email</label>
+                  <Input {...field} id={field.name} className="h-10" />
+                </fieldset>
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <fieldset>
+                  <label htmlFor={field.name}>Password</label>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    type="password"
+                    className="h-10"
+                  />
+                </fieldset>
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name="keepSigned"
+              render={({ field }) => (
+                <fieldset className="flex flex-row items-start space-x-2 space-y-0">
+                  <Checkbox
+                    id={field.name}
+                    checked={field.value}
+                    onChange={field.onChange}
+                  />
+                  <label htmlFor={field.name}>Keep me signed in</label>
+                </fieldset>
+              )}
+            />
+
+            <button
+              type="submit"
+              className="item-center inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded border bg-[#B5082A] p-3 px-3 py-2 text-base font-bold text-white shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
+              disabled={form.formState.isSubmitting}
             >
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="keepSigned"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-2 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormLabel>Keep me signed in</FormLabel>
-                  </FormItem>
-                )}
-              />
-
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={form.formState.isSubmitting}
-              >
-                Sign In
-              </Button>
-              <Button
-                type="button"
-                className="w-full"
-                variant="secondary"
-                disabled={form.formState.isSubmitting}
-              >
-                Sign In With a Code
-              </Button>
-            </form>
-          </Form>
+              Sign In
+            </button>
+            <button
+              type="button"
+              className="inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-base font-bold shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
+              disabled={form.formState.isSubmitting}
+            >
+              Sign In With a Code
+            </button>
+          </form>
         </div>
       </div>
     </section>

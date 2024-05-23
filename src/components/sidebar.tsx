@@ -1,7 +1,8 @@
+import { Separator } from '@radix-ui/react-separator'
+
 import { Config } from './icons/config'
 import { Pin } from './icons/pin'
 import { Ticket } from './icons/ticket'
-import { Separator } from './ui/separator'
 
 export function Sidebar() {
   return (
