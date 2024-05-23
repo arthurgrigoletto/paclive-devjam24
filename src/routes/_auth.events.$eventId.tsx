@@ -1,6 +1,6 @@
-import { Separator } from '@radix-ui/react-separator'
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { Divider } from 'antd'
 import { ArrowLeft, User } from 'lucide-react'
 
 import { getEventDetail } from '@/api/get-event-detail'
@@ -45,14 +45,14 @@ function EventDetailPage() {
             <StatusTag status={eventDetail?.status} />
           </div>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
           <Link
             to="/"
             className="inline-flex h-12 cursor-pointer items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-base font-bold shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
           >
             Cancel
           </Link>
-          <Separator orientation="vertical" className="h-12 bg-[#CCD1D9]" />
+          <Divider type="vertical" className="h-12 bg-[#CCD1D9]" />
           <button
             form={FORM_ID}
             type="submit"
