@@ -2,20 +2,14 @@ import 'chart.js/auto' // necessary for chart.js to work properly
 
 import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { format } from 'date-fns'
 import { ArrowLeft, CalendarIcon } from 'lucide-react'
 import { useState } from 'react'
 import { Line } from 'react-chartjs-2'
+import dayjs from 'dayjs'
 
 import { getRevenue } from '@/api/get-revenue'
 import { predict } from '@/api/predict'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { DatePicker } from 'antd'
 
 export const Route = createFileRoute('/_auth/predictive-analysis')({
   component: CreatePredictiveAnalysisPage,
@@ -186,7 +180,7 @@ function createRevenueWithForecastChart() {
           >
             Forecast End Date:{' '}
           </label>
-          <Popover>
+          {/* <Popover>
             <PopoverTrigger asChild>
               <Button variant={'outline'}>
                 {forecastEnd.toISOString().split('T')[0]}
@@ -196,12 +190,18 @@ function createRevenueWithForecastChart() {
             <PopoverContent className="w-auto p-0" align="start">
               <Calendar
                 mode="single"
-                // selected={forecastEnd.toISOString().split('T')[0]}
                 onSelect={handleDateChange}
                 initialFocus
               />
             </PopoverContent>
-          </Popover>
+          </Popover> */}
+          <DatePicker
+                id={"forecast-end"}
+                className="h-10"
+                format={'MM/DD/YYYY'}
+                value={dayjs(forecastEnd.toISOString().split('T')[0])}
+                onChange={(value) => handleDateChange(value.toDate())}
+              />
         </div>
         <button
           onClick={handleConsolidate}
