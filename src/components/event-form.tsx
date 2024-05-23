@@ -1,10 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { CalendarIcon, Ticket } from 'lucide-react'
-import type { ComponentProps } from 'react'
+import { type ComponentProps, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import type { GetEventsResponse } from '@/api/get-events'
 import maps from '@/assets/maps.png'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -48,29 +49,44 @@ const eventForm = z.object({
   displayEndedAt: z.boolean().default(false).optional(),
 })
 
-export type eventForm = z.infer<typeof eventForm>
+export type EventForm = z.infer<typeof eventForm>
 
-export type EventFormProps = ComponentProps<'form'>
+export type EventFormProps = Omit<ComponentProps<'form'>, 'onSubmit'> & {
+  eventData?: GetEventsResponse
+  onSubmit: (data: EventForm) => void
+}
 
-export function EventForm(props: EventFormProps) {
-  const form = useForm<eventForm>({
+export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
+  const form = useForm<EventForm>({
     resolver: zodResolver(eventForm),
-    // defaultValues: {
-    //   email: '',
-    //   keepSigned: false,
-    //   password: '',
-    // },
+    defaultValues: {
+      capacity: 0,
+      displayEndedAt: false,
+      displayStartedAt: false,
+      endedDate: undefined,
+      endedTime: undefined,
+      id: '',
+      location: '',
+      name: '',
+      price: '',
+      priceTier: '',
+      startedDate: undefined,
+      startedTime: undefined,
+      ticketDesignId: '',
+    },
   })
 
-  function handleCreateEvent(data: eventForm) {
-    console.log(data)
-  }
+  useEffect(() => {
+    if (eventData) {
+      form.reset(eventData)
+    }
+  }, [eventData, form])
 
   return (
     <Form {...form}>
       <form
-        className="grid w-full grid-cols-2 gap-x-40 rounded-lg bg-white p-6 pb-24"
-        onSubmit={form.handleSubmit(handleCreateEvent)}
+        className="grid w-full grid-cols-2 gap-x-40"
+        onSubmit={form.handleSubmit(onSubmit)}
         {...props}
       >
         <div className="grid auto-rows-min grid-cols-2 gap-8">
@@ -307,6 +323,7 @@ export function EventForm(props: EventFormProps) {
                 <FormLabel>Price Tier*</FormLabel>
                 <Select
                   onValueChange={field.onChange}
+                  value={field.value}
                   defaultValue={field.value}
                 >
                   <FormControl>
@@ -334,6 +351,7 @@ export function EventForm(props: EventFormProps) {
                 <FormLabel>Location*</FormLabel>
                 <Select
                   onValueChange={field.onChange}
+                  value={field.value}
                   defaultValue={field.value}
                 >
                   <FormControl>
@@ -357,39 +375,44 @@ export function EventForm(props: EventFormProps) {
             className="h-[226px] w-[471px]"
           />
 
-          <FormField
-            control={form.control}
-            name="ticketDesignId"
-            render={({ field }) => (
-              <FormItem className="w-64">
-                <FormLabel>Choose a Ticket Design*</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="- Select -" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="MOB.101">MOB.101</SelectItem>
-                    <SelectItem value="MOB.102">MOB.102</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex items-end gap-4">
+            <FormField
+              control={form.control}
+              name="ticketDesignId"
+              render={({ field }) => (
+                <FormItem className="w-64">
+                  <FormLabel>Choose a Ticket Design*</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="- Select -" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="MOB.101">MOB.101</SelectItem>
+                      <SelectItem value="MOB.102">MOB.102</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <span className="text-xs font-bold">OR</span>
-          <button
-            type="button"
-            className="inline-flex h-12 w-fit cursor-pointer items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
-          >
-            <Ticket className="size-4 text-[#434A54]" />
-            Go to Ticket Designer
-          </button>
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-bold">OR</span>
+              <button
+                type="button"
+                className="inline-flex h-12 w-fit cursor-pointer items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
+              >
+                <Ticket className="size-4 text-[#434A54]" />
+                Go to Ticket Designer
+              </button>
+            </div>
+          </div>
         </div>
       </form>
     </Form>

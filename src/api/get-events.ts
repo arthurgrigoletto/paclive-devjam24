@@ -3,7 +3,14 @@ import { api } from '@/lib/axios'
 export interface GetEventsResponse {
   id: string
   name: string
-  eventDate: Date
+  capacity: number
+  price: string
+  priceTier: string
+  ticketDesignId: string
+  startedAt: Date
+  endedAt: Date
+  displayStartedAt: boolean
+  displayEndedAt: boolean
   location: string
   status: 'ACTIVE' | 'INACTIVE'
   createdAt: Date | null

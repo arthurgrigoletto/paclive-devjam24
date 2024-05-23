@@ -39,7 +39,9 @@ function CreateEventPage() {
         </div>
       </div>
 
-      <EventForm id={FORM_ID} />
+      <div className="rounded-lg bg-white p-6 pb-24">
+        <EventForm id={FORM_ID} />
+      </div>
     </section>
   )
 }
