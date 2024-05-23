@@ -26,7 +26,6 @@ export function Dropzone({ file, setFile }: DropzoneProps) {
       'text/csv': ['.csv'],
       'application/vnd.ms-excel': ['.xls'],
       'text/html': ['.htm', '.html'],
-      'image/*': [],
     },
   })
 
