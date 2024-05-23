@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Search } from 'lucide-react'
 
 import { getEvents } from '@/api/get-events'
 import { Chart } from '@/components/icons/chart'
 import { Filter } from '@/components/icons/filter'
 import { Plus } from '@/components/icons/plus'
-import { Button } from '@/components/ui/button'
 
 export const Route = createFileRoute('/_auth/')({
   component: DashboardPage,
@@ -18,8 +17,6 @@ function DashboardPage() {
     queryFn: getEvents,
   })
 
-  const navigate = useNavigate()
-
   console.log({ eventList })
 
   return (
@@ -27,16 +24,19 @@ function DashboardPage() {
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold text-[#181F25]">Event List</h2>
         <div className="flex items-center gap-8">
-          <button
+          <Link
             className="inline-flex h-12 cursor-pointer items-center gap-2 rounded-sm border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
-            onClick={() => navigate({'to':'/predictive-analysis'})}
+            to="/predictive-analysis"
           >
             <Chart className="size-5" />
             Data & Insight
-          </button>
-          <Button size="lg" className="inline-flex items-center gap-2">
+          </Link>
+          <Link
+            className="inline-flex h-12 cursor-pointer items-center gap-2 rounded border bg-[#B5082A] p-3 px-3 py-2 text-base text-white shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
+            to="/events/create"
+          >
             <Plus className="size-5" /> Add New
-          </Button>
+          </Link>
         </div>
       </div>
 

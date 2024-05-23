@@ -16,6 +16,7 @@ import { Route as AuthImport } from './routes/_auth'
 import { Route as AuthIndexImport } from './routes/_auth.index'
 import { Route as AuthPredictiveAnalysisImport } from './routes/_auth.predictive-analysis'
 import { Route as AuthEventsCreateImport } from './routes/_auth.events.create'
+import { Route as AuthEventsEventIdImport } from './routes/_auth.events.$eventId'
 
 // Create/Update Routes
 
@@ -41,6 +42,11 @@ const AuthPredictiveAnalysisRoute = AuthPredictiveAnalysisImport.update({
 
 const AuthEventsCreateRoute = AuthEventsCreateImport.update({
   path: '/events/create',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthEventsEventIdRoute = AuthEventsEventIdImport.update({
+  path: '/events/$eventId',
   getParentRoute: () => AuthRoute,
 } as any)
 
@@ -76,6 +82,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/events/$eventId': {
+      id: '/_auth/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof AuthEventsEventIdImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/events/create': {
       id: '/_auth/events/create'
       path: '/events/create'
@@ -92,6 +105,7 @@ export const routeTree = rootRoute.addChildren({
   AuthRoute: AuthRoute.addChildren({
     AuthPredictiveAnalysisRoute,
     AuthIndexRoute,
+    AuthEventsEventIdRoute,
     AuthEventsCreateRoute,
   }),
   LoginRoute,
