@@ -6,7 +6,10 @@ import { StatusTag } from './status-tag';
 const formatDate = (dateString) => {
   const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric' };
   const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', options).format(date);
+  const separator = "•";
+  let formattedDate = Intl.DateTimeFormat('en-US', options).format(date);
+  formattedDate = formattedDate.replace(/,([^,]*)$/, ` ${separator}$1`);
+  return formattedDate;
 };
 
 const EventCard = ({
