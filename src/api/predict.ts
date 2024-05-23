@@ -17,10 +17,14 @@ export async function predict(
   forecast: Array<ForecastItem>,
 ) {
   const response = await api.post<Array<PredictResponse>>(
-    'http://127.0.0.1:5000/predict',
+    'https://79fc-45-190-248-252.ngrok-free.app/predict',
+    // 'http://127.0.0.1:5000/predict',
     {
       history,
       forecast,
+    },
+    {
+      withCredentials: false, // Ensure credentials are not sent
     },
   )
 
