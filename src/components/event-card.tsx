@@ -22,7 +22,7 @@ const EventCard = ({
   venue,
 }) => {
   return (
-    <div style={{width:"400px"}} className="bg-white border border-gray-300 rounded-lg p-4 w-80 relative m-4 shadow-md">
+    <div style={{width:"400px"}} className="bg-white border border-gray-200 rounded-lg p-4 w-80 relative m-4">
       <StatusTag status={status} />
       <div className="mt-6">
         <div className="text-sm text-gray-500">{type}</div>
