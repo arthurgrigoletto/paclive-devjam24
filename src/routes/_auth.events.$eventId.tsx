@@ -74,7 +74,7 @@ function EventDetailPage() {
           <h3 className="text-2xl font-bold text-[#181F25]">Event Details</h3>
           <div className="flex items-center gap-4">
             <Link
-              to="/"
+              to="/attendance"
               className="inline-flex items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold text-[#434A54] shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]"
             >
               <User className="size-4" />
