@@ -23,7 +23,7 @@ const EventCard = ({
       <StatusTag status={status} />
       <div className="mt-6">
         <div className="text-sm text-gray-500">{type}</div>
-        <div className="text-lg font-bold mt-2">{eventName}</div>
+        <div style={{fontSize: "1.3rem"}} className="text-lg font-bold mt-2">{eventName}</div>
         <div className="mt-4">
           <div className="my-2 border border-gray-200 rounded p-2">
             <div className="text-sm text-gray-500">Event ID</div>
