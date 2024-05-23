@@ -21,10 +21,13 @@ export const getRevenueMock = http.get<never, never, Array<GetRevenueResponse>>(
         ((date.getTime() / (1000 * 60 * 60 * 24)) % daysInYear) * radiansPerDay,
       )
 
-      // Simulate revenue with seasonal effect
-      const baseRevenue = 300 // average base revenue
+      // Create a noise component that varies over time
+      const noise = Math.sin(index / 30) * 50 + Math.random() * 100
+
+      // Simulate revenue with seasonal effect and noise
+      const baseRevenue = 250 // average base revenue
       const seasonalMultiplier = 170 // amplitude of seasonal variation
-      const value = baseRevenue + seasonalMultiplier * seasonalEffect + Math.random() * 100
+      const value = baseRevenue + seasonalMultiplier * seasonalEffect + noise
 
       return {
         date,
