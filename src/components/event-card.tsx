@@ -25,19 +25,19 @@ const EventCard = ({
     <div style={{width:"400px"}} className="bg-white border border-gray-200 rounded-lg p-4 w-80 relative m-4">
       <StatusTag status={status} />
       <div className="mt-6">
-        <div className="text-sm text-gray-500">{type}</div>
+        <div style={{fontSize: "0.75rem"}} className="text-sm text-gray-500">{type}</div>
         <div style={{fontSize: "1.3rem"}} className="text-lg font-bold mt-2">{eventName}</div>
         <div className="mt-4">
           <div className="my-2 border border-gray-200 rounded p-2">
-            <div className="text-sm text-gray-500">Event ID</div>
+            <div style={{fontSize: "0.75rem"}} className="text-sm text-gray-500">Event ID</div>
             <strong className="block text-gray-700">{eventId}</strong>
           </div>
           <div className="my-2 border border-gray-200 rounded p-2">
-            <div className="text-sm text-gray-500">Event Date / Time</div>
+            <div style={{fontSize: "0.75rem"}} className="text-sm text-gray-500">Event Date / Time</div>
             <strong className="block text-gray-700">{formatDate(eventStartDate)}{eventEndDate && ` - ${formatDate(eventEndDate)}`}</strong>
           </div>
           <div className="my-2 border border-gray-200 rounded p-2">
-            <div className="text-sm text-gray-500">Venue</div>
+            <div style={{fontSize: "0.75rem"}} className="text-sm text-gray-500">Venue</div>
             <strong className="block text-gray-700">{venue}</strong>
           </div>
         </div>
