@@ -2,6 +2,7 @@ import React from 'react';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { StatusTag } from './status-tag';
+import { Link } from '@tanstack/react-router';
 
 const formatDate = (dateString) => {
   const options = { weekday: 'short', month: 'short', day: '2-digit', year: 'numeric', hour: 'numeric', minute: 'numeric' };
@@ -48,7 +49,11 @@ const EventCard = ({
             <button className="text-xl focus:outline-none">...</button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-white border border-gray-300 rounded shadow-md w-32">
+          <Link
+            to={`/events/${eventId}`}
+          >
             <DropdownMenuItem className="focus:outline-none p-2 cursor-pointer hover:bg-gray-100">Edit</DropdownMenuItem>
+          </Link>
             <DropdownMenuItem className="focus:outline-none p-2 cursor-pointer hover:bg-gray-100">Publish</DropdownMenuItem>
             <DropdownMenuItem className="focus:outline-none p-2 cursor-pointer hover:bg-gray-100">Delete</DropdownMenuItem>
           </DropdownMenuContent>

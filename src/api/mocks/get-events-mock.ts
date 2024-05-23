@@ -45,7 +45,7 @@ const events = [
     displayEndedAt: false,
     displayStartedAt: true,
     endedAt: null,
-    startedAt: faker.date.past(),
+    startedAt: faker.date.future(),
     price: 50.0,
     priceTier: 1,
     ticketDesignId: 'MOB.1',
