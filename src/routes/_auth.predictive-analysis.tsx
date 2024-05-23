@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowLeft, CalendarIcon } from 'lucide-react'
 import { useState } from 'react'
-import { Line } from 'react-chartjs-2'
+import { Line, Bar } from 'react-chartjs-2'
 import dayjs from 'dayjs'
 
 import { getRevenue } from '@/api/get-revenue'
@@ -37,11 +37,11 @@ function CreatePredictiveAnalysisPage() {
 }
 
 function createRevenueWithForecastChart() {
-  const [consolidated, setConsolidated] = useState(false)
+  const [consolidated, setConsolidated] = useState(true)
 
-  // Set default forecast end date to 90 days from now
+  // Set default forecast end date to 1 year from now
   const defaultForecastEnd = new Date()
-  defaultForecastEnd.setDate(defaultForecastEnd.getDate() + 90)
+  defaultForecastEnd.setDate(defaultForecastEnd.getDate() + 365)
 
   const [forecastEnd, setForecastEnd] = useState(defaultForecastEnd)
 
@@ -112,11 +112,15 @@ function createRevenueWithForecastChart() {
     : forecast
 
   if (
+    consolidated &&
     displayedRevenue[displayedRevenue.length - 1].date ===
     displayedForecast[0].date
   ) {
     displayedForecast[0].value +=
       displayedRevenue[displayedRevenue.length - 1].value
+    displayedForecast.unshift(displayedRevenue[displayedRevenue.length - 2])
+  } else if (!consolidated) {
+    displayedForecast.unshift(displayedRevenue[displayedRevenue.length - 1])
   }
 
   const allDates = new Set([
@@ -143,8 +147,9 @@ function createRevenueWithForecastChart() {
       {
         label: 'Revenue',
         data: revenueData,
-        fill: false,
+        fill: true,
         borderColor: 'rgba(24,31,36,1)',
+        backgroundColor: 'rgba(24,31,36,1)',
         borderWidth: 2,
         pointRadius: 0,
         lineTension: 0.1,
@@ -152,8 +157,9 @@ function createRevenueWithForecastChart() {
       {
         label: 'Forecast',
         data: forecastData,
-        fill: false,
+        fill: true,
         borderColor: 'rgba(181,8,43,1)',
+        backgroundColor: 'rgba(181,8,43,1)',
         borderWidth: 2,
         pointRadius: 0,
         lineTension: 0.1,
@@ -180,21 +186,6 @@ function createRevenueWithForecastChart() {
           >
             Forecast End Date:{' '}
           </label>
-          {/* <Popover>
-            <PopoverTrigger asChild>
-              <Button variant={'outline'}>
-                {forecastEnd.toISOString().split('T')[0]}
-                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                onSelect={handleDateChange}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover> */}
           <DatePicker
                 id={"forecast-end"}
                 className="h-10"

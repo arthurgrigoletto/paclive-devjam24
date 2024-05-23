@@ -22,7 +22,7 @@ export const getRevenueMock = http.get<never, never, Array<GetRevenueResponse>>(
       )
 
       // Create a noise component that varies over time
-      const noise = Math.sin(index / 30) * 50 + Math.random() * 100
+      const noise = Math.random() * 20
 
       // Simulate revenue with seasonal effect and noise
       const baseRevenue = 250 // average base revenue
