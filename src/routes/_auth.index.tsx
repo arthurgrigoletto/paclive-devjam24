@@ -1,23 +1,24 @@
-import { useQuery } from '@tanstack/react-query'
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { Search } from 'lucide-react'
+import { useQuery } from '@tanstack/react-query';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { Search } from 'lucide-react';
 
-import { getEvents } from '@/api/get-events'
-import { Chart } from '@/components/icons/chart'
-import { Filter } from '@/components/icons/filter'
-import { Plus } from '@/components/icons/plus'
+import { getEvents } from '@/api/get-events';
+import { Chart } from '@/components/icons/chart';
+import { Filter } from '@/components/icons/filter';
+import { Plus } from '@/components/icons/plus';
+import EventCard from '@/components/event-card';
 
 export const Route = createFileRoute('/_auth/')({
   component: DashboardPage,
-})
+});
 
 function DashboardPage() {
   const { data: eventList } = useQuery({
     queryKey: ['events'],
     queryFn: getEvents,
-  })
+  });
 
-  console.log({ eventList })
+  console.log({ eventList });
 
   return (
     <section className="flex flex-col space-y-8">
@@ -56,6 +57,23 @@ function DashboardPage() {
           </div>
         </div>
       </div>
+      
+      <div className="flex flex-wrap gap-4">
+        {eventList?.map((event) => (
+          <EventCard
+            key={event.id}
+            status={event.status}
+            type={event?.type || "Concert"}
+            eventName={event.name}
+            eventId={event.id}
+            eventStartDate={event.startedAt}
+            eventEndDate={event.endedAt}
+            venue={event.location}
+          />
+        ))}
+      </div>
     </section>
-  )
+  );
 }
+
+export default DashboardPage;

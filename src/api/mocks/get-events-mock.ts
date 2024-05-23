@@ -6,7 +6,7 @@ import { GetEventsResponse } from '../get-events'
 export const getEventsMock = http.get<never, never, Array<GetEventsResponse>>(
   '/events',
   async () => {
-    const events: Array<GetEventsResponse> = Array.from({ length: 7 }).map(
+    const events: Array<GetEventsResponse> = Array.from({ length: 3 }).map(
       (_, index) => ({
         id: `GS203${index}`,
         name: faker.lorem.words({ max: 4, min: 1 }),
@@ -15,7 +15,8 @@ export const getEventsMock = http.get<never, never, Array<GetEventsResponse>>(
         capacity: faker.number.int({ max: 10 }),
         displayEndedAt: faker.datatype.boolean(),
         displayStartedAt: faker.datatype.boolean(),
-        endedAt: faker.date.future(),
+        endedAt: null,
+        // endedAt: faker.date.future(),
         startedAt: faker.date.future(),
         price: faker.number.float().toFixed(2),
         priceTier: faker.number.int().toString(),
