@@ -467,7 +467,7 @@ export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
                     showInfo={false}
                   />
                   <span className="self-start text-xs text-[#333333]">
-                    (100%) of invite sent
+                    ({attendanceProgress}%) of invite sent
                   </span>
                 </div>
               </div>
