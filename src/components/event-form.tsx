@@ -46,6 +46,8 @@ export type EventFormProps = Omit<ComponentProps<'form'>, 'onSubmit'> & {
 
 export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
   const [file, setFile] = useState<File | null>(null)
+  const [isUploadSuccessfully, setIsUploadSuccessfully] = useState(false)
+  const [attendanceProgress, setAttendanceProgress] = useState(0)
   const location = useLocation()
 
   const form = useForm<EventForm>({
@@ -72,6 +74,22 @@ export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
       form.reset(eventData)
     }
   }, [eventData, form])
+
+  useEffect(() => {
+    if (isUploadSuccessfully) {
+      const interval = setInterval(() => {
+        setAttendanceProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval)
+            return 100
+          }
+          return prev + 20
+        })
+      }, 500)
+
+      return () => clearInterval(interval)
+    }
+  }, [isUploadSuccessfully])
 
   return (
     <>
@@ -399,7 +417,7 @@ export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
 
           {location.pathname.includes('events') &&
           !location.pathname.includes('create') &&
-          !file ? (
+          !isUploadSuccessfully ? (
             <Dialog>
               <DialogTrigger asChild>
                 <button className="mt-4 inline-flex h-10 w-fit cursor-pointer items-center gap-2 rounded border border-[#CCD1D9] bg-white px-3 py-2 text-xs font-bold shadow-[0_4px_8px_0_rgba(0,0,0,0.1)]">
@@ -420,6 +438,7 @@ export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
                     <button
                       type="button"
                       disabled={!file}
+                      onClick={() => setIsUploadSuccessfully(true)}
                       className="inline-flex h-12 cursor-pointer items-center gap-2 rounded border bg-[#B5082A] p-3 px-3 py-2 text-base font-bold text-white shadow-[0_4px_8px_0_rgba(0,0,0,0.1)] disabled:cursor-not-allowed disabled:border disabled:border-[#CCD1D9] disabled:bg-[#F5F7FA] disabled:text-[#CCD1D9]"
                     >
                       Continue
@@ -442,7 +461,11 @@ export function EventForm({ eventData, onSubmit, ...props }: EventFormProps) {
                 <div className="flex w-full max-w-[300px] flex-col items-center justify-center gap-1">
                   <File className="size-6 text-[#434A54]" />
                   <span className="text-sm text-[#5a5a5a]">{file?.name}</span>
-                  <Progress percent={100} status="success" showInfo={false} />
+                  <Progress
+                    percent={attendanceProgress}
+                    status={attendanceProgress < 100 ? 'active' : 'success'}
+                    showInfo={false}
+                  />
                   <span className="self-start text-xs text-[#333333]">
                     (100%) of invite sent
                   </span>

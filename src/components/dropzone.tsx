@@ -57,7 +57,7 @@ export function Dropzone({ file, setFile }: DropzoneProps) {
           <span className="text-sm font-medium text-[#5a5a5a]">
             {file.name}
           </span>
-          <Progress percent={100} status="active" />
+          <Progress percent={100} status="active" showInfo={false} />
           <span className="self-start text-xs text-[#333333]">
             Upload Complete(100%)
           </span>
