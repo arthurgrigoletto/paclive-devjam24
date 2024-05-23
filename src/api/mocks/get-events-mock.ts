@@ -1,30 +1,62 @@
-import { faker } from '@faker-js/faker'
-import { http, HttpResponse } from 'msw'
+import { faker } from "@faker-js/faker";
+import { http, HttpResponse } from "msw";
 
-import { GetEventsResponse } from '../get-events'
+import { GetEventsResponse } from "../get-events";
+
+const events = [
+  {
+    id: `GT0101`,
+    name: "Beethoven No .2 Concerto",
+    status: "ACTIVE",
+    location: "Luca Arena",
+    capacity: 200,
+    displayEndedAt: false,
+    displayStartedAt: true,
+    endedAt: null,
+    startedAt: faker.date.future(),
+    price: 50.0,
+    priceTier: 1,
+    ticketDesignId: "MOB.1",
+    createdAt: faker.date.past(),
+    updatedAt: null,
+  },
+  {
+    id: `GT0102`,
+    name: "Metallica Concert - Acoustic",
+    status: "ACTIVE",
+    location: "Luca Theater",
+    capacity: 200,
+    displayEndedAt: false,
+    displayStartedAt: true,
+    endedAt: null,
+    startedAt: faker.date.future(),
+    price: 50.0,
+    priceTier: 1,
+    ticketDesignId: "MOB.1",
+    createdAt: faker.date.past(),
+    updatedAt: null,
+  },
+  {
+    id: `GS2035`,
+    name: "Music Is Art : Recital 2024",
+    status: "INACTIVE",
+    location: "Stadium",
+    capacity: 200,
+    displayEndedAt: false,
+    displayStartedAt: true,
+    endedAt: null,
+    startedAt: faker.date.past(),
+    price: 50.0,
+    priceTier: 1,
+    ticketDesignId: "MOB.1",
+    createdAt: faker.date.past(),
+    updatedAt: null,
+  },
+];
 
 export const getEventsMock = http.get<never, never, Array<GetEventsResponse>>(
-  '/events',
+  "/events",
   async () => {
-    const events: Array<GetEventsResponse> = Array.from({ length: 3 }).map(
-      (_, index) => ({
-        id: `GS203${index}`,
-        name: faker.lorem.words({ max: 4, min: 1 }),
-        status: faker.helpers.arrayElement(['ACTIVE', 'INACTIVE']),
-        location: 'Luca Arena',
-        capacity: faker.number.int({ max: 10 }),
-        displayEndedAt: faker.datatype.boolean(),
-        displayStartedAt: faker.datatype.boolean(),
-        endedAt: null,
-        // endedAt: faker.date.future(),
-        startedAt: faker.date.future(),
-        price: faker.number.float().toFixed(2),
-        priceTier: faker.number.int().toString(),
-        ticketDesignId: faker.string.nanoid(),
-        createdAt: faker.date.past(),
-        updatedAt: null,
-      }),
-    )
-    return HttpResponse.json(events)
+    return HttpResponse.json(events);
   },
-)
+);
